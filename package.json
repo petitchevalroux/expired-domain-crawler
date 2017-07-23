@@ -5,6 +5,9 @@
     "scripts": {
         "test": "make tests"
     },
+    "bin": {
+        "expired-domain-crawler": "src/cli.js"
+    },
     "repository": {
         "type": "git",
         "url": "git+ssh://github.com/petitchevalroux/expired-domain-crawler.git"
@@ -24,6 +27,7 @@
         "sinon": "^1.17.5"
     },
     "dependencies": {
-        "@petitchevalroux/semantic-scraper": "^1.4.0"
+        "@petitchevalroux/semantic-scraper": "^1.4.0",
+        "command-line-args": "^4.0.6"
     }
 }
