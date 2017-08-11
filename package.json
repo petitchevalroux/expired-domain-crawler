@@ -27,7 +27,7 @@
         "sinon": "^1.17.5"
     },
     "dependencies": {
-        "@petitchevalroux/semantic-scraper": "^1.4.0",
+        "@petitchevalroux/semantic-scraper": "^1.5.0",
         "command-line-args": "^4.0.6"
     }
 }
