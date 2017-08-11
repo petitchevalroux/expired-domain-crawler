@@ -1,20 +1,20 @@
 {
-  "name": "node-project",
+  "name": "expired-domain-crawler",
   "version": "1.0.0",
-  "description": "Empty node project",
+  "description": "",
   "scripts": {
     "test": "make tests"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://github.com/petitchevalroux/node-project.git"
+    "url": "git+ssh://github.com/petitchevalroux/expired-domain-crawler.git"
   },
   "author": "Patrick Poulain",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/petitchevalroux/node-project/issues"
+    "url": "https://github.com/petitchevalroux/expired-domain-crawler/issues"
   },
-  "homepage": "https://github.com/petitchevalroux/node-project#readme",
+  "homepage": "https://github.com/petitchevalroux/expired-domain-crawler#readme",
   "devDependencies": {
     "eslint": "^4.4.1",
     "eslint-plugin-promise": "^3.5.0",
