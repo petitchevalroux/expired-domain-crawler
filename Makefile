@@ -64,7 +64,7 @@ $(ESLINT): .build/install
 
 .build/lint: .build/build $(ESLINT) $(TEST_FILES) $(SOURCE_FILES)
 	$(eval FILES := $(filter-out .build/build, $(filter-out $(ESLINT), $?)))
-	test "$(FILES)" = "" || $(ESLINT) --fix $(FILES) && $(ESLINT) $(FILES)
+	test "$(FILES)" = "" || ($(ESLINT) --fix $(FILES) && $(ESLINT) $(FILES))
 	touch $@
 
 ISTANBUL=node_modules/.bin/istanbul
