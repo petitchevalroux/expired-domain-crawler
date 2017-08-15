@@ -11,18 +11,25 @@ class Crawler {
     }
 
     addUrl(url) {
-        this
+        return this
             .getUnfilteredUrlsFifo()
             .then((fifo) => {
-                return fifo.write(url);
+                return new Promise((resolve, reject) => {
+                    fifo.write(url, (err) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        resolve(url);
+                    });
+                });
             });
     }
 
     run() {
         const self = this;
-        Promise.all([
-            this.getUnfilteredUrlsFifo,
-            this.getFilteredUrlsFifo
+        return Promise.all([
+            this.getUnfilteredUrlsFifo(),
+            this.getFilteredUrlsFifo()
         ])
             .then((fifos) => {
                 fifos[0]
@@ -31,6 +38,7 @@ class Crawler {
                     .pipe(self.downloadStream)
                     .pipe(self.extractStream)
                     .pipe(fifos[0]);
+                return;
             });
     }
 
