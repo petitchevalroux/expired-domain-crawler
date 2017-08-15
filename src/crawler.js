@@ -12,10 +12,10 @@ class Crawler {
 
     addUrl(url) {
         this
-                .getUnfilteredUrlsFifo()
-                .then((fifo) => {
-                    return fifo.write(url);
-                });
+            .getUnfilteredUrlsFifo()
+            .then((fifo) => {
+                return fifo.write(url);
+            });
     }
 
     run() {
@@ -24,14 +24,14 @@ class Crawler {
             this.getUnfilteredUrlsFifo,
             this.getFilteredUrlsFifo
         ])
-        .then((fifos) => {
-            fifos[0]
-                .pipe(self.filterStream)
-                .pipe(fifos[1])
-                .pipe(self.downloadStream)
-                .pipe(self.extractStream)
-                .pipe(fifos[0]);
-        });
+            .then((fifos) => {
+                fifos[0]
+                    .pipe(self.filterStream)
+                    .pipe(fifos[1])
+                    .pipe(self.downloadStream)
+                    .pipe(self.extractStream)
+                    .pipe(fifos[0]);
+            });
     }
 
     getUnfilteredUrlsFifo() {
