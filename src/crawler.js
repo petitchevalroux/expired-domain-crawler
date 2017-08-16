@@ -7,6 +7,7 @@ class Crawler {
         this.fifoRepository = options.fifoRepository;
         this.filterStream = options.filterStream;
         this.downloadStream = options.downloadStream;
+        //this.downloadStream.on("data",(data)=>{console.log(data)});
         this.extractStream = options.extractStream;
     }
 

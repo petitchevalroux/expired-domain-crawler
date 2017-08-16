@@ -24,6 +24,7 @@
     "sinon": "^3.2.0"
   },
   "dependencies": {
+    "@petitchevalroux/http-download-stream": "^1.0.0",
     "@petitchevalroux/redis-stream-list": "^0.0.0",
     "bluebird": "^3.5.0",
     "md5": "^2.2.1",

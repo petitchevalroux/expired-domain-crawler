@@ -49,6 +49,13 @@ class UrlRedisRepository extends Url {
                 });
             });
     }
+
+    update(id, urlObject) {
+        const data = Object.assign(urlObject, {
+            id: id
+        });
+        return this.create(data);
+    }
 }
 
 module.exports = UrlRedisRepository;
