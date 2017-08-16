@@ -24,7 +24,6 @@ class UrlFilterStream extends Transform {
             .catch((err) => {
                 callback(err);
             });
-        callback(null, chunk);
     }
 }
 module.exports = UrlFilterStream;

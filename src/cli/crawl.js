@@ -10,14 +10,20 @@ const path = require("path"),
     Crawler = require(path.join(__dirname, "..", "crawler")),
     FilterStream = require(path.join(__dirname, "..", "streams",
         "url-filter")),
+    HttpDownloadStream = require(path.join(__dirname, "..", "streams",
+        "download")),
+    urlRepository = new UrlRepository({
+        redisClient: redisClient
+    }),
     crawler = new Crawler({
         fifoRepository: new FifoRepository({
             redisClient: redisClient
         }),
         filterStream: new FilterStream({
-            urlRepository: new UrlRepository({
-                redisClient: redisClient
-            })
+            urlRepository: urlRepository
+        }),
+        downloadStream: new HttpDownloadStream({
+            urlRepository: urlRepository
         })
     }),
     Promise = require("bluebird");
