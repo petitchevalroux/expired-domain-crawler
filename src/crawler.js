@@ -29,13 +29,15 @@ class Crawler {
         const self = this;
         return Promise.all([
             this.getUrlsToFilterFifo(),
-            this.getUrlsToDownloadFifo()
+            this.getUrlsToDownloadFifo(),
+            this.getContentToExtractFifo()
         ])
             .then((fifos) => {
                 fifos[0]
                     .pipe(self.filterStream)
                     .pipe(fifos[1])
                     .pipe(self.downloadStream)
+                    .pipe(fifos[2])
                     .pipe(self.extractStream)
                     .pipe(fifos[0]);
                 return;
@@ -48,6 +50,10 @@ class Crawler {
 
     getUrlsToDownloadFifo() {
         return this.fifoRepository.get("urls:todownload");
+    }
+
+    getContentToExtractFifo() {
+        return this.fifoRepository.get("content:toextract");
     }
 }
 
