@@ -12,7 +12,7 @@ class Crawler {
 
     addUrl(url) {
         return this
-            .getUnfilteredUrlsFifo()
+            .getUrlsToFilterFifo()
             .then((fifo) => {
                 return new Promise((resolve, reject) => {
                     fifo.write(url, (err) => {
@@ -28,8 +28,8 @@ class Crawler {
     run() {
         const self = this;
         return Promise.all([
-            this.getUnfilteredUrlsFifo(),
-            this.getFilteredUrlsFifo()
+            this.getUrlsToFilterFifo(),
+            this.getUrlsToDownloadFifo()
         ])
             .then((fifos) => {
                 fifos[0]
@@ -42,12 +42,12 @@ class Crawler {
             });
     }
 
-    getUnfilteredUrlsFifo() {
-        return this.fifoRepository.get("urls:unfiltered");
+    getUrlsToFilterFifo() {
+        return this.fifoRepository.get("urls:tofilter");
     }
 
-    getFilteredUrlsFifo() {
-        return this.fifoRepository.get("urls:filtered");
+    getUrlsToDownloadFifo() {
+        return this.fifoRepository.get("urls:todownload");
     }
 }
 
