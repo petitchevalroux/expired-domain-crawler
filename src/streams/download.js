@@ -1,6 +1,7 @@
 "use strict";
 const {
-    Transform
+    Transform,
+    HttpError
 } = require("@petitchevalroux/http-download-stream");
 class DownloadStream extends Transform {
     constructor(options) {
@@ -13,7 +14,12 @@ class DownloadStream extends Transform {
         const self = this;
         super._transform(chunk, encoding, (err, result) => {
             if (err) {
-                return callback(err);
+                // Don't stop on http error
+                if (err instanceof HttpError) {
+                    return callback();
+                } else {
+                    return callback(err);
+                }
             }
             const url = chunk.toString();
             self.urlRepository
