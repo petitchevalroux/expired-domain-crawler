@@ -20,13 +20,26 @@ class DownloadStream extends Transform {
                     return urlObject.setLastDownloaded(new Date());
                 })
                 .then((urlObject) => {
-                    return self.urlRepository.update(urlObject.id,
-                        urlObject);
+                    return self.urlRepository.update(
+                        urlObject.id,
+                        urlObject
+                    );
+                })
+                .then((urlObject) => {
+                    if (result.output.statusCode === 200) {
+                        callback(
+                            null,
+                            Object.assign(urlObject, {
+                                body: result.output.body
+                            }));
+                    } else {
+                        callback();
+                    }
+                    return result;
                 })
                 .catch((err) => {
                     callback(err);
                 });
-            callback(null, result);
         });
     }
 }
