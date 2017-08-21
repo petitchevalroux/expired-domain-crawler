@@ -9,14 +9,28 @@ class UrlFilterStream extends Transform {
     }
     _transform(chunk, encoding, callback) {
         const url = chunk.toString();
-        this.urlRepository
+        const self = this;
+        self.urlRepository
             .getByUrlOrCreate(url)
             .then((urlObject) => {
                 return urlObject
                     .isToDownload()
                     .then((toDownload) => {
                         if (toDownload) {
-                            callback(null, url);
+                            return urlObject
+                                .setLastDownloaded(new Date())
+                                .then((urlObject) => {
+                                    return self.urlRepository.update(
+                                        urlObject.id,
+                                        urlObject
+                                    );
+                                })
+                                .then(() => {
+                                    callback(null, url);
+                                    return toDownload;
+                                });
+                        } else {
+                            callback();
                         }
                         return toDownload;
                     });
