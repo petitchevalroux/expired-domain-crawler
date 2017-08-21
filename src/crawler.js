@@ -18,8 +18,8 @@ class Crawler {
                         index], data);
                 });
                 stream.on("error", (error) => {
-                    logger.error("%s: %j", prefixes[index],
-                        error);
+                    logger.error("%s: %s", prefixes[index],
+                        error.toString());
                 });
             });
     }
