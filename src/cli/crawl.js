@@ -15,6 +15,8 @@ const path = require("path"),
     urlRepository = new UrlRepository({
         redisClient: redisClient
     }),
+    ExtractorStream = require(path.join(__dirname, "..", "streams",
+        "extractor")),
     crawler = new Crawler({
         fifoRepository: new FifoRepository({
             redisClient: redisClient
@@ -24,7 +26,8 @@ const path = require("path"),
         }),
         downloadStream: new HttpDownloadStream({
             urlRepository: urlRepository
-        })
+        }),
+        extractStream: new ExtractorStream()
     }),
     Promise = require("bluebird");
 Promise
