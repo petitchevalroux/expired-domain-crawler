@@ -6,6 +6,7 @@ class Extractor extends LinksExtractor {
     constructor(options) {
         options = options || {};
         options.writableObjectMode = true;
+        options.readableObjectMode = true;
         super(options);
     }
 

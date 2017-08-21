@@ -12,6 +12,8 @@ class FifoRedis extends Fifo {
     }
     create(name) {
         return Promise.resolve(new FifoStreamList({
+            readableObjectMode: true,
+            writableObjectMode: true,
             redisClient: this.redisClient,
             listKey: name
         }));
