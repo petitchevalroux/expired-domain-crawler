@@ -19,9 +19,9 @@
     request "^2.81.0"
     retry "^0.10.1"
 
-"@petitchevalroux/redis-stream-list@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@petitchevalroux/redis-stream-list/-/redis-stream-list-0.0.0.tgz#490c57db4036862f25414c42d7eeaf239f54fe44"
+"@petitchevalroux/redis-stream-list@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@petitchevalroux/redis-stream-list/-/redis-stream-list-1.0.0.tgz#92927fde9ccec95c8106e8c37ad1033f41687211"
 
 abbrev@1:
   version "1.1.0"
