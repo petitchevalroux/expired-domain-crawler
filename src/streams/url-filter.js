@@ -4,6 +4,8 @@ const {
 } = require("stream");
 class UrlFilterStream extends Transform {
     constructor(options) {
+        options.readableObjectMode = true;
+        options.writableObjectMode = true;
         super(options);
         this.urlRepository = options.urlRepository;
     }

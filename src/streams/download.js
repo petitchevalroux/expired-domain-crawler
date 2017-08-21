@@ -4,6 +4,8 @@ const {
 } = require("@petitchevalroux/http-download-stream");
 class DownloadStream extends Transform {
     constructor(options) {
+        options.writableObjectMode = true;
+        options.readableObjectMode = true;
         super(options);
         this.urlRepository = options.urlRepository;
     }
