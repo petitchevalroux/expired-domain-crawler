@@ -24,6 +24,7 @@
     "sinon": "^3.2.0"
   },
   "dependencies": {
+    "@petitchevalroux/entities-extractor-stream": "^1.0.0",
     "@petitchevalroux/http-download-stream": "^1.1.0",
     "@petitchevalroux/redis-stream-list": "^1.0.0",
     "bluebird": "^3.5.0",

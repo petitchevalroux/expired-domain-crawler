@@ -8,6 +8,8 @@ class Extractor extends LinksExtractor {
         options = options || {};
         options.writableObjectMode = true;
         options.readableObjectMode = true;
+        options.onlyHttp = true;
+        options.uniqueUrl = true;
         super(options);
         this.buffering = false;
         this.buffer = [];
