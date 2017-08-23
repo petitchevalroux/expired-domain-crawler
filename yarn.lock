@@ -1323,6 +1323,10 @@ readable-stream@^2.0.2, readable-stream@^2.2.2:
     string_decoder "~1.0.3"
     util-deprecate "~1.0.1"
 
+redis-mock@^0.20.0:
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/redis-mock/-/redis-mock-0.20.0.tgz#94a395865babbcebf538b6b59941723e48073010"
+
 repeat-string@^1.5.2:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/repeat-string/-/repeat-string-1.6.1.tgz#8dcae470e1c88abc2d600fff4a776286da75e637"

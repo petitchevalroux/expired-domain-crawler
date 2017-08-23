@@ -31,8 +31,11 @@ class DomainRepository {
                                         id: id,
                                         hostname: hostname
                                     });
-                                    return self.create(
-                                        domainObject);
+                                    return self
+                                        .create(domainObject)
+                                        .then(() => {
+                                            return domainObject;
+                                        });
                                 }
                                 return domainObject;
                             });
@@ -43,6 +46,7 @@ class DomainRepository {
     getNormalizedDomain(hostname) {
         return Promise.resolve(hostname);
     }
+
     getDomainId(hostname, normalized) {
         return (!normalized ? this.getNormalizedDomain(hostname) : Promise.resolve(
             hostname))

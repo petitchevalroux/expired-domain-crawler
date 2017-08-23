@@ -27,11 +27,15 @@ class UrlFilterStream extends Transform {
                                 return urlObject
                                     .setLastDownloaded(new Date())
                                     .then((urlObject) => {
-                                        return self.urlRepository
+                                        return self
+                                            .urlRepository
                                             .update(
                                                 urlObject.id,
                                                 urlObject
-                                            );
+                                            )
+                                            .then(() => {
+                                                return urlObject;
+                                            });
                                     })
                                     .then(() => {
                                         callback(null, url);

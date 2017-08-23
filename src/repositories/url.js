@@ -33,8 +33,11 @@ class UrlRepository {
                                         id: id,
                                         url: url
                                     });
-                                    return self.create(
-                                        urlObject);
+                                    return self
+                                        .create(urlObject)
+                                        .then(() => {
+                                            return urlObject;
+                                        });
                                 }
                                 return urlObject;
                             });
