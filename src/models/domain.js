@@ -3,7 +3,8 @@ class DomainModel {
     constructor(value) {
         this.id = value.id;
         this.hostname = value.hostname;
-        this.noMatchingDns = !value.noMatchingDns ? false : true;
+        this.lastNoMatchingDns = value.lastNoMatchingDns ?
+            value.lastNoMatchingDns : 0;
     }
 }
 

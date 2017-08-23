@@ -8,7 +8,8 @@ class DomainRedisRepository extends Domain {
         this.redisClient = options.redisClient;
         this.objectRepository = new ObjectRepository({
             redisClient: this.redisClient,
-            namespace: "domain"
+            namespace: "domain",
+            zSetProperties: ["lastNoMatchingDns"]
         });
     }
 
