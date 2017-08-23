@@ -4,6 +4,7 @@ class ObjectRedisRepository {
     constructor(options) {
         this.redisClient = options.redisClient;
         this.namespace = options.namespace;
+        this.zSetProperties = options.zSetProperties || [];
     }
 
     fetchById(id) {
@@ -19,24 +20,24 @@ class ObjectRedisRepository {
                                 return reject(err);
                             }
                             // Hash not found
-                            if (!hash) {
-                                return resolve(null);
-                            }
-                            self
-                                .getObjectFromHash(hash)
-                                .then((object) => {
-                                    return resolve(
-                                        Object.assign({
-                                            id: id
-                                        },
-                                        object)
-                                    );
-                                })
-                                .catch((err) => {
-                                    reject(err);
-                                });
+                            resolve(hash || null);
                         });
                 });
+            })
+            .then((hash) => {
+                if (!hash) {
+                    return null;
+                }
+                return self.getObjectFromHash(hash);
+            })
+            .then((object) => {
+                return self.addZsetProperties(id, object);
+            })
+            .then((object) => {
+                return object ?
+                    Object.assign({
+                        id: id
+                    }, object) : null;
             });
     }
 
@@ -50,8 +51,13 @@ class ObjectRedisRepository {
             .getKey(object.id)
             .then((key) => {
                 return self
-                    .getHashFromObject(object)
-                    .then(function(hash) {
+                    .getHashAndZsetFromObject(object)
+                    .then(function(result) {
+                        const hash = result.hash;
+                        const zSet = result.zSet;
+                        if (!hash) {
+                            return zSet;
+                        }
                         return new Promise((resolve, reject) => {
                             self
                                 .redisClient
@@ -60,10 +66,16 @@ class ObjectRedisRepository {
                                         return reject(
                                             err);
                                     }
-                                    return resolve(
-                                        object.id);
+                                    return resolve(zSet);
                                 });
                         });
+                    })
+                    .then((zSet) => {
+                        if (!zSet) {
+                            return object.id;
+                        }
+                        return self.saveZsetProperties(object.id,
+                            zSet);
                     });
             });
     }
@@ -75,19 +87,35 @@ class ObjectRedisRepository {
         return this.create(data);
     }
 
-    getHashFromObject(object) {
-        const tmp = Object.assign({}, object);
-        const hash = {};
+    getHashAndZsetFromObject(object) {
+        const self = this,
+            tmp = Object.assign({}, object),
+            hash = {},
+            zSet = {};
+        let countHashProperties = 0,
+            countZsetProperties = 0;
         delete tmp.id;
         Object
             .getOwnPropertyNames(tmp)
             .forEach((property) => {
                 const value = tmp[property];
                 if (typeof(value) !== "undefined") {
-                    hash[property] = JSON.stringify(value);
+                    if (self.zSetProperties.indexOf(property) < 0) {
+                        hash[property] = JSON.stringify(value);
+                        countHashProperties++;
+                    } else {
+                        const propertySet = zSet[property] || [];
+                        propertySet.push(value);
+                        propertySet.push(object.id);
+                        zSet[property] = propertySet;
+                        countZsetProperties++;
+                    }
                 }
             });
-        return Promise.resolve(hash);
+        return Promise.resolve({
+            hash: countHashProperties > 0 ? hash : null,
+            zSet: countZsetProperties > 0 ? zSet : null
+        });
     }
 
     getObjectFromHash(hash) {
@@ -98,6 +126,67 @@ class ObjectRedisRepository {
                 object[property] = JSON.parse(hash[property]);
             });
         return Promise.resolve(object);
+    }
+
+    getZsetKey(property) {
+        return [this.namespace, property].join(":");
+    }
+
+    saveZsetProperties(id, zSet) {
+        const multi = [];
+        const self = this;
+        Object
+            .getOwnPropertyNames(zSet)
+            .forEach((property) => {
+                multi.push(["zadd", self.getZsetKey(property)].concat(
+                    zSet[property]));
+            });
+        if (!multi.length) {
+            return Promise.resolve(id);
+        }
+        return new Promise((resolve, reject) => {
+            self
+                .redisClient
+                .multi(multi)
+                .exec((err) => {
+                    return err ? reject(err) : resolve(id);
+                });
+        });
+    }
+
+    addZsetProperties(id, object) {
+        const multi = [],
+            self = this;
+        if (!self.zSetProperties.length) {
+            return Promise.resolve(object);
+        }
+        this.zSetProperties.forEach((property) => {
+            multi.push(["zscore", self.getZsetKey(property), id]);
+        });
+        return new Promise((resolve, reject) => {
+            self
+                .redisClient
+                .multi(multi)
+                .exec((err, values) => {
+                    const outputObject = Object.assign({},
+                        object || {});
+                    let countZsetProperties = 0;
+                    if (err) {
+                        return reject(err);
+                    }
+                    self.zSetProperties.forEach((property,
+                        index) => {
+                        const value = values[index];
+                        if (value) {
+                            outputObject[property] =
+                                value;
+                            countZsetProperties++;
+                        }
+                    });
+                    resolve(countZsetProperties > 0 ?
+                        outputObject : object);
+                });
+        });
     }
 }
 

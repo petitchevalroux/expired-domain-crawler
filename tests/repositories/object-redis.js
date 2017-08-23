@@ -94,4 +94,61 @@ describe("Repositories Object redis", () => {
                 });
             });
     });
+
+
+    it("store object normal and zSet properties", () => {
+        const repositoryWithZset = new ObjectRedisRepository({
+            namespace: "test-object",
+            redisClient: redisClient,
+            zSetProperties: ["zSetProperty1",
+                "zSetProperty2"
+            ]
+        });
+        const object = {
+            id: "storeZset",
+            foo: "bar",
+            zSetProperty1: 1,
+            zSetProperty2: 53
+        };
+        return repositoryWithZset
+            .create(object)
+            .then((id) => {
+                return repositoryWithZset.fetchById(id);
+            })
+            .then((readObject) => {
+                return assert.deepEqual(readObject, {
+                    id: "storeZset",
+                    foo: "bar",
+                    zSetProperty1: 1,
+                    zSetProperty2: 53
+                });
+            });
+    });
+
+    it("store object with only zSet properties", () => {
+        const repositoryWithZset = new ObjectRedisRepository({
+            namespace: "test-object",
+            redisClient: redisClient,
+            zSetProperties: ["zSetProperty1",
+                "zSetProperty2"
+            ]
+        });
+        const object = {
+            id: "storeZset2",
+            zSetProperty1: 1,
+            zSetProperty2: 53
+        };
+        return repositoryWithZset
+            .create(object)
+            .then((id) => {
+                return repositoryWithZset.fetchById(id);
+            })
+            .then((readObject) => {
+                return assert.deepEqual(readObject, {
+                    id: "storeZset2",
+                    zSetProperty1: 1,
+                    zSetProperty2: 53
+                });
+            });
+    });
 });

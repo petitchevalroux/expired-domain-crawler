@@ -1,8 +1,9 @@
 "use strict";
 const {
-    Writable
-} = require("stream");
-
+        Writable
+    } = require("stream"),
+    path = require("path"),
+    dateUtils = require(path.join(__dirname, "..", "utils", "date"));
 class HttpErrorStream extends Writable {
     constructor(options) {
         super({
@@ -18,11 +19,12 @@ class HttpErrorStream extends Writable {
         this.domainRepository
             .getByHostnameOrCreate(chunk.hostname)
             .then((domainObject) => {
-                if (chunk.code === "ENOTFOUND" && !domainObject.noMatchingDns) {
+                if (chunk.code === "ENOTFOUND") {
                     return self
                         .domainRepository.update(
                             domainObject.id, {
-                                noMatchingDns: true
+                                lastNoMatchingDns: dateUtils
+                                    .getTimestamp()
                             }
                         );
                 }
