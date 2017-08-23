@@ -17,21 +17,40 @@ const path = require("path"),
     }),
     ExtractorStream = require(path.join(__dirname, "..", "streams",
         "extractor")),
-    crawler = new Crawler({
-        fifoRepository: new FifoRepository({
-            redisClient: redisClient
-        }),
-        filterStream: new FilterStream({
-            urlRepository: urlRepository
-        }),
-        downloadStream: new HttpDownloadStream({
-            urlRepository: urlRepository
-        }),
-        extractStream: new ExtractorStream()
+    fifoRepository = new FifoRepository({
+        redisClient: redisClient
     }),
-    Promise = require("bluebird");
-Promise
-    .all([crawler.addUrl("http://dev.petitchevalroux.net/index.html")])
-    .then(() => {
-        return crawler.run();
+    HttpErrorStream = require(path.join(__dirname, "..", "streams",
+        "http-error")),
+    Promise = require("bluebird"),
+    DomainRepository = require(path.join(__dirname, "..", "repositories",
+        "domain-redis")),
+    domainRepository = new DomainRepository({
+        redisClient: redisClient
+    });
+
+
+module.exports = fifoRepository.get("http:error")
+    .then((httpErrorFifoStream) => {
+        httpErrorFifoStream.pipe(new HttpErrorStream({
+            domainRepository: domainRepository
+        }));
+        return new Crawler({
+            fifoRepository: fifoRepository,
+            filterStream: new FilterStream({
+                urlRepository: urlRepository
+            }),
+            downloadStream: new HttpDownloadStream({
+                urlRepository: urlRepository,
+                httpErrorStream: httpErrorFifoStream
+            }),
+            extractStream: new ExtractorStream()
+        });
+    })
+    .then((crawler) => {
+        return Promise
+            .all([crawler.addUrl("http://ratatouklouklou.com/index.html")])
+            .then(() => {
+                return crawler.run();
+            });
     });
