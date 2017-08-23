@@ -1,8 +1,10 @@
 "use strict";
 const {
-    Transform,
-    HttpError
-} = require("@petitchevalroux/http-download-stream");
+        Transform,
+        HttpError
+    } = require("@petitchevalroux/http-download-stream"),
+    path = require("path"),
+    dateUtils = require(path.join(__dirname, "..", "utils", "date"));
 class DownloadStream extends Transform {
     constructor(options) {
         options.writableObjectMode = true;
@@ -37,14 +39,12 @@ class DownloadStream extends Transform {
             self.urlRepository
                 .getByUrlOrCreate(url)
                 .then((urlObject) => {
-                    return urlObject.setLastDownloaded(new Date());
-                })
-                .then((urlObject) => {
                     return self
                         .urlRepository
                         .update(
-                            urlObject.id,
-                            urlObject
+                            urlObject.id, {
+                                "lastDownloaded": dateUtils.getTimestamp()
+                            }
                         )
                         .then(() => {
                             return urlObject;
