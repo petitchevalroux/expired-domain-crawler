@@ -4,7 +4,8 @@ class UrlModel {
     constructor(value) {
         this.id = value.id;
         this.url = value.url;
-        this.lastDownloaded = value.lastDownloaded;
+        this.lastDownloaded = value.lastDownloaded ? value.lastDownloaded :
+            0;
     }
 
     isToDownload() {
@@ -12,11 +13,6 @@ class UrlModel {
             return Promise.resolve(true);
         }
         return Promise.resolve(false);
-    }
-
-    setLastDownloaded(date) {
-        this.lastDownloaded = Math.round(date.getTime() / 1000);
-        return Promise.resolve(this);
     }
 }
 

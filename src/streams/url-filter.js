@@ -1,7 +1,9 @@
 "use strict";
 const {
-    Transform
-} = require("stream");
+        Transform
+    } = require("stream"),
+    path = require("path"),
+    dateUtils = require(path.join(__dirname, "..", "utils", "date"));
 class UrlFilterStream extends Transform {
     constructor(options) {
         options.readableObjectMode = true;
@@ -23,29 +25,24 @@ class UrlFilterStream extends Transform {
                     return urlObject
                         .isToDownload()
                         .then((toDownload) => {
-                            if (toDownload) {
-                                return urlObject
-                                    .setLastDownloaded(new Date())
-                                    .then((urlObject) => {
-                                        return self
-                                            .urlRepository
-                                            .update(
-                                                urlObject.id,
-                                                urlObject
-                                            )
-                                            .then(() => {
-                                                return urlObject;
-                                            });
-                                    })
-                                    .then(() => {
-                                        callback(null, url);
-                                        return toDownload;
-                                    });
-                            } else {
-                                callback();
+                            if (!toDownload) {
+                                return undefined;
                             }
-                            return toDownload;
+                            return self
+                                .urlRepository
+                                .update(
+                                    urlObject.id, {
+                                        "lastDownloaded": dateUtils
+                                            .getTimestamp()
+                                    }
+                                )
+                                .then(() => {
+                                    return url;
+                                });
                         });
+                })
+                .then((url) => {
+                    return callback(null, url);
                 })
                 .catch((err) => {
                     callback(err);
