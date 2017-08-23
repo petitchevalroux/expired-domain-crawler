@@ -1,14 +1,14 @@
 "use strict";
 const path = require("path"),
-    Url = require(path.join(__dirname, "url")),
+    Domain = require(path.join(__dirname, "domain")),
     ObjectRepository = require(path.join(__dirname, "object-redis"));
-class UrlRedisRepository extends Url {
+class DomainRedisRepository extends Domain {
     constructor(options) {
         super(options);
         this.redisClient = options.redisClient;
         this.objectRepository = new ObjectRepository({
             redisClient: this.redisClient,
-            namespace: "url"
+            namespace: "domain"
         });
     }
 
@@ -25,4 +25,4 @@ class UrlRedisRepository extends Url {
     }
 }
 
-module.exports = UrlRedisRepository;
+module.exports = DomainRedisRepository;
