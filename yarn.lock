@@ -16,9 +16,9 @@
     sprintf-js "^1.0.3"
     trace-error "0.0.7"
 
-"@petitchevalroux/http-download-stream@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@petitchevalroux/http-download-stream/-/http-download-stream-1.1.0.tgz#1e63c7a0acb1423a791fd0f3d0766cea7a55df89"
+"@petitchevalroux/http-download-stream@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@petitchevalroux/http-download-stream/-/http-download-stream-1.1.1.tgz#d26e531b06fd0bd586afe1f8c4f6b537a002b1d7"
   dependencies:
     "@petitchevalroux/error" "^1.0.1"
     bluebird "^3.5.0"
