@@ -8,7 +8,10 @@ class UrlRedisRepository extends Url {
         this.redisClient = options.redisClient;
         this.objectRepository = new ObjectRepository({
             redisClient: this.redisClient,
-            namespace: "url"
+            namespace: "url",
+            zSetProperties: [
+                "lastDownloaded"
+            ]
         });
     }
 
