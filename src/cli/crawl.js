@@ -33,7 +33,9 @@ const path = require("path"),
 module.exports = fifoRepository.get("http:error")
     .then((httpErrorFifoStream) => {
         httpErrorFifoStream.pipe(new HttpErrorStream({
-            domainRepository: domainRepository
+            domainRepository: domainRepository,
+            apiKey: "2s7Z7fhVq5_D5mKnZo1ZdyUpBgud2ZvoW",
+            apiSecret: "D5mPonRk8Wat8AUSWYfSyS"
         }));
         return new Crawler({
             fifoRepository: fifoRepository,
@@ -49,7 +51,7 @@ module.exports = fifoRepository.get("http:error")
     })
     .then((crawler) => {
         return Promise
-            .all([crawler.addUrl("http://ratatouklouklou.com/index.html")])
+            .all([crawler.addUrl("http://www.monde-du-velo.com/")])
             .then(() => {
                 return crawler.run();
             });
