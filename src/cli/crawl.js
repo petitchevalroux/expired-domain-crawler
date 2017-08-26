@@ -1,8 +1,8 @@
 "use strict";
 
 const path = require("path"),
-    redis = require("redis"),
-    redisClient = redis.createClient(),
+    di = require(path.join(__dirname, "..", "di")),
+    redisClient = di.redis,
     FifoRepository = require(path.join(__dirname, "..", "repositories",
         "fifo-redis")),
     UrlRepository = require(path.join(__dirname, "..", "repositories",
@@ -27,17 +27,22 @@ const path = require("path"),
         "domain-redis")),
     domainRepository = new DomainRepository({
         redisClient: redisClient
+    }),
+    httpErrorStream = new HttpErrorStream({
+        domainRepository: domainRepository,
+        apiClient: di.godaddy
     });
+
+httpErrorStream.on("error", (error) => {
+    di.log.error(error);
+});
 
 
 module.exports = fifoRepository.get("http:error")
     .then((httpErrorFifoStream) => {
-        httpErrorFifoStream.pipe(new HttpErrorStream({
-            domainRepository: domainRepository,
-            apiKey: "2s7Z7fhVq5_D5mKnZo1ZdyUpBgud2ZvoW",
-            apiSecret: "D5mPonRk8Wat8AUSWYfSyS"
-        }));
+        httpErrorFifoStream.pipe(httpErrorStream);
         return new Crawler({
+            log: di.log,
             fifoRepository: fifoRepository,
             filterStream: new FilterStream({
                 urlRepository: urlRepository
