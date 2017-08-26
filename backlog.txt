@@ -1,4 +1,8 @@
 2017-08-22 163 minutes single downloader without parallelization
-Database size 183MB (using docker images)
 150231 urls in download queue
-155161 urls downloaded  
+155161 urls downloaded
+
+2017-08-22 913 minutes (15 hours) single downloader without parallelization
+3532 urls in download queue
+4694509 urls in filter queue
+14752 urls downloaded
