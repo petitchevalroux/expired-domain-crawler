@@ -15,7 +15,9 @@ class HttpErrorStream extends Writable {
     }
     _write(chunk, encoding, callback) {
         if (!chunk.url || !chunk.code || !chunk.hostname) {
-            return callback();
+            return callback(new Error(
+                "Missing data in writed chunk to http-error stream"
+            ));
         }
         const self = this;
         this.domainRepository
