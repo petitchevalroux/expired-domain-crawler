@@ -1,0 +1,13 @@
+{
+    "redis": {
+        "url": "redis://127.0.0.1:6379",
+        "prefix": "exd:"
+    },
+    "log": {
+        "level": "verbose"
+    },
+    "godaddy": {
+        "client_id": "",
+        "client_secret": ""
+    }
+}

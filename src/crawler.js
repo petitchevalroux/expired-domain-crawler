@@ -1,8 +1,6 @@
 "use strict";
 
-const Promise = require("bluebird"),
-    path = require("path"),
-    logger = require(path.join(__dirname, "logger"));
+const Promise = require("bluebird");
 
 class Crawler {
     constructor(options) {
@@ -10,15 +8,18 @@ class Crawler {
         this.filterStream = options.filterStream;
         this.downloadStream = options.downloadStream;
         this.extractStream = options.extractStream;
+        this.log = options.log;
         const prefixes = ["filtered", "downloaded", "extracted"];
+        const self = this;
         [this.filterStream, this.downloadStream, this.extractStream]
             .forEach((stream, index) => {
                 stream.on("data", (data) => {
-                    logger.verbose("%s: data out %j", prefixes[
-                        index], data);
+                    self.log.verbose("%s: data out %j",
+                        prefixes[
+                            index], data);
                 });
                 stream.on("error", (error) => {
-                    logger.error("%s: %s", prefixes[index],
+                    self.log.error("%s: %s", prefixes[index],
                         error.toString());
                 });
             });

@@ -4,7 +4,6 @@ const {
     } = require("stream"),
     path = require("path"),
     dateUtils = require(path.join(__dirname, "..", "utils", "date")),
-    godaddy = require("godaddy"),
     Promise = require("bluebird");
 class HttpErrorStream extends Writable {
     constructor(options) {
@@ -12,8 +11,7 @@ class HttpErrorStream extends Writable {
             objectMode: true
         });
         this.domainRepository = options.domainRepository;
-        this.apiKey = options.apiKey || "";
-        this.apiSecret = options.apiSecret || "";
+        this.apiClient = options.apiClient;
     }
     _write(chunk, encoding, callback) {
         if (!chunk.url || !chunk.code || !chunk.hostname) {
@@ -62,33 +60,22 @@ class HttpErrorStream extends Writable {
                 callback(err);
             });
     }
-    getApiClient() {
-        if (!this.apiClient) {
-            this.apiClient = godaddy({
-                client_id: this.apiKey,
-                client_secret: this.apiSecret
-            });
-        }
-        return Promise.resolve(this.apiClient);
-    }
 
     isAvailable(hostname) {
-        return this.getApiClient()
-            .then((client) => {
-                return new Promise((resolve, reject) => {
-                    client
-                        .domains
-                        .available({
-                            domain: hostname
-                        }, (err, data) => {
-                            if (err) {
-                                return reject(err);
-                            }
-                            resolve(data.available ? true :
-                                false);
-                        });
+        const self = this;
+        return new Promise((resolve, reject) => {
+            self.apiClient
+                .domains
+                .available({
+                    domain: hostname
+                }, (err, data) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(data.available ? true :
+                        false);
                 });
-            });
+        });
     }
 }
 
