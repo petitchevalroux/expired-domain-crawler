@@ -68,7 +68,11 @@ class DownloadStream extends Transform {
                     return result;
                 })
                 .catch((err) => {
-                    callback(err);
+                    // Avoid stream error when parsing url failed
+                    if (err instanceof URIError) {
+                        return callback();
+                    }
+                    return callback(err);
                 });
         });
     }

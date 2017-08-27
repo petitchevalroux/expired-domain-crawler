@@ -45,16 +45,21 @@ class UrlRepository {
             });
     }
     getNormalizedUrl(url) {
-        return Promise.resolve(normalizeUrl(url));
+        return new Promise((resolve) => {
+            resolve(normalizeUrl(url));
+        });
     }
     getUrlId(url, normalized) {
-        return (!normalized ? this.getNormalizedUrl(url) : Promise.resolve(
-            url))
-            .then((url) => {
+        if (!normalized) {
+            return this.getNormalizedUrl(url);
+        } else {
+            return new Promise((resolve) => {
                 const parsedUrl = urlModule.parse(url);
-                return [md5(parsedUrl.hostname), md5(parsedUrl.path)].join(
-                    ":");
+                resolve([md5(parsedUrl.hostname), md5(parsedUrl.path)]
+                    .join(
+                        ":"));
             });
+        }
     }
 }
 

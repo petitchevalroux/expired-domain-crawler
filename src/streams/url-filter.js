@@ -12,13 +12,13 @@ class UrlFilterStream extends Transform {
         this.urlRepository = options.urlRepository;
     }
     _transform(chunk, encoding, callback) {
+        const self = this;
         try {
             const url = chunk.toString()
                 .trim();
             if (url.substring(0, 4) !== "http") {
                 return callback();
             }
-            const self = this;
             self.urlRepository
                 .getByUrlOrCreate(url)
                 .then((urlObject) => {
@@ -45,11 +45,19 @@ class UrlFilterStream extends Transform {
                     return callback(null, url);
                 })
                 .catch((err) => {
-                    callback(err);
+                    self.filterError(err, callback);
                 });
         } catch (err) {
-            return callback(err);
+            self.filterError(err, callback);
         }
+    }
+
+    filterError(err, callback) {
+        // Avoid stream error when parsing url failed
+        if (err instanceof URIError) {
+            return callback();
+        }
+        return callback(err);
     }
 }
 module.exports = UrlFilterStream;
