@@ -4,7 +4,8 @@ const {
     } = require("stream"),
     path = require("path"),
     dateUtils = require(path.join(__dirname, "..", "utils", "date")),
-    Promise = require("bluebird");
+    Promise = require("bluebird"),
+    Error = require("@petitchevalroux/error");
 class HttpErrorStream extends Writable {
     constructor(options) {
         super({
@@ -16,7 +17,8 @@ class HttpErrorStream extends Writable {
     _write(chunk, encoding, callback) {
         if (!chunk.url || !chunk.code || !chunk.hostname) {
             return callback(new Error(
-                "Missing data in writed chunk to http-error stream"
+                "Missing data in writed chunk to http-error stream (chunk: %j)",
+                chunk
             ));
         }
         const self = this;
