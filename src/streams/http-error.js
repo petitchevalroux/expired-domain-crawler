@@ -17,7 +17,7 @@ class HttpErrorStream extends Writable {
     _write(chunk, encoding, callback) {
         if (!chunk.url || !chunk.code || !chunk.hostname) {
             return callback(new Error(
-                "Missing data in writed chunk to http-error stream (chunk: %j)",
+                "Invalid http-error stream (error: %j)",
                 chunk
             ));
         }

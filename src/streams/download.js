@@ -23,8 +23,11 @@ class DownloadStream extends Transform {
                     if (!self.httpErrorStream) {
                         return callback();
                     }
+                    const message = err.message || err.toString();
                     return self.httpErrorStream.write(
-                        Object.assign({}, err),
+                        Object.assign({
+                            "message": message
+                        }, err),
                         "",
                         (err) => {
                             callback(err);
