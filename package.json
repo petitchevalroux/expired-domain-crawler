@@ -27,7 +27,7 @@
   "dependencies": {
     "@petitchevalroux/entities-extractor-stream": "^1.1.0",
     "@petitchevalroux/error": "^1.0.1",
-    "@petitchevalroux/http-download-stream": "^1.2.2",
+    "@petitchevalroux/http-download-stream": "^1.2.3",
     "@petitchevalroux/redis-stream-list": "^1.0.1",
     "bluebird": "^3.5.0",
     "godaddy": "^0.2.1",
