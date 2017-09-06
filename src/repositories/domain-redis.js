@@ -11,7 +11,8 @@ class DomainRedisRepository extends Domain {
             namespace: "domain",
             zSetProperties: [
                 "lastNoMatchingDns",
-                "lastAvailable"
+                "lastAvailable",
+                "downloadedUrls"
             ]
         });
     }
@@ -26,6 +27,10 @@ class DomainRedisRepository extends Domain {
 
     update(id, domainObject) {
         return this.objectRepository.update(id, domainObject);
+    }
+
+    increment(id, field, increment) {
+        return this.objectRepository.increment(id, field, increment);
     }
 }
 

@@ -45,7 +45,8 @@ module.exports = fifoRepository.get("http:error")
             log: di.log,
             fifoRepository: fifoRepository,
             filterStream: new FilterStream({
-                urlRepository: urlRepository
+                urlRepository: urlRepository,
+                domainRepository: domainRepository
             }),
             downloadStream: new HttpDownloadStream({
                 urlRepository: urlRepository,
