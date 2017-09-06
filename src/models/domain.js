@@ -5,6 +5,8 @@ class DomainModel {
         this.hostname = value.hostname;
         this.lastNoMatchingDns = value.lastNoMatchingDns ?
             value.lastNoMatchingDns : 0;
+        this.downloadedUrls = value.downloadedUrls ?
+            value.downloadedUrls : 0;
     }
 }
 
