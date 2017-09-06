@@ -188,6 +188,41 @@ class ObjectRedisRepository {
                 });
         });
     }
+
+    increment(id, property, increment) {
+        const self = this;
+        return this.getKey(id)
+            .then((key) => {
+                return new Promise((resolve, reject) => {
+                    if (self.zSetProperties.indexOf(property) <
+                        0) {
+                        self.redisClient.hincrby(
+                            key,
+                            property,
+                            increment,
+                            (err, result) => {
+                                if (err) {
+                                    return reject(err);
+                                }
+                                resolve(result);
+                            }
+                        );
+                    } else {
+                        self.redisClient.zincrby(
+                            self.getZsetKey(property),
+                            increment,
+                            id,
+                            (err, result) => {
+                                if (err) {
+                                    return reject(err);
+                                }
+                                resolve(result);
+                            }
+                        );
+                    }
+                });
+            });
+    }
 }
 
 module.exports = ObjectRedisRepository;
