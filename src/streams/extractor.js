@@ -10,6 +10,11 @@ class Extractor extends LinksExtractor {
         options.readableObjectMode = true;
         options.onlyHttp = true;
         options.uniqueUrl = true;
+        options.validContentTypes = [
+            "text/html",
+            "application/xhtml+xml",
+            "application/xml"
+        ];
         super(options);
         this.buffering = false;
         this.buffer = [];
