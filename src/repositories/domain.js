@@ -1,6 +1,6 @@
 "use strict";
 const Promise = require("bluebird"),
-    md5 = require("md5"),
+    hash = require("sha256"),
     path = require("path"),
     DomainModel = require(path.join(__dirname, "..", "models", "domain"));
 class DomainRepository {
@@ -55,7 +55,7 @@ class DomainRepository {
                     return self.getDomainId(hostname, true);
                 });
         }
-        return Promise.resolve(md5(hostname));
+        return Promise.resolve(hash(hostname));
     }
 }
 

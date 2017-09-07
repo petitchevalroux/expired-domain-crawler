@@ -31,10 +31,10 @@
     "@petitchevalroux/redis-stream-list": "^1.0.1",
     "bluebird": "^3.5.0",
     "godaddy": "^0.2.1",
-    "md5": "^2.2.1",
     "nconf": "^0.8.4",
     "normalize-url": "^1.9.1",
     "redis": "^2.8.0",
+    "sha256": "^0.2.0",
     "winston": "^2.3.1"
   }
 }

@@ -2,7 +2,7 @@
 const Promise = require("bluebird"),
     normalizeUrl = require("normalize-url"),
     urlModule = require("url"),
-    md5 = require("md5"),
+    hash = require("sha256"),
     path = require("path"),
     UrlModel = require(path.join(__dirname, "..", "models", "url"));
 class UrlRepository {
@@ -59,7 +59,7 @@ class UrlRepository {
         } else {
             return new Promise((resolve) => {
                 const parsedUrl = urlModule.parse(url);
-                resolve([md5(parsedUrl.hostname), md5(parsedUrl.path)]
+                resolve([hash(parsedUrl.hostname), hash(parsedUrl.path)]
                     .join(
                         ":"));
             });
