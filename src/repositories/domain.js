@@ -48,11 +48,14 @@ class DomainRepository {
     }
 
     getDomainId(hostname, normalized) {
-        return (!normalized ? this.getNormalizedDomain(hostname) : Promise.resolve(
-            hostname))
-            .then((hostname) => {
-                return md5(hostname);
-            });
+        if (!normalized) {
+            const self = this;
+            return this.getNormalizedDomain(hostname)
+                .then((hostname) => {
+                    return self.getDomainId(hostname, true);
+                });
+        }
+        return Promise.resolve(md5(hostname));
     }
 }
 

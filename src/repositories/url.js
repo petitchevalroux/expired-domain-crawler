@@ -51,7 +51,11 @@ class UrlRepository {
     }
     getUrlId(url, normalized) {
         if (!normalized) {
-            return this.getNormalizedUrl(url);
+            const self = this;
+            return this.getNormalizedUrl(url)
+                .then((url) => {
+                    return self.getUrlId(url, true);
+                });
         } else {
             return new Promise((resolve) => {
                 const parsedUrl = urlModule.parse(url);
