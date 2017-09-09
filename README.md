@@ -4,5 +4,5 @@
 ## Monitoring
 
 ```
-watch -d "redis-cli llen urls:todownload && redis-cli llen urls:tofilter && redis-cli zcard domain:lastNoMatchingDns && redis-cli zcard domain:lastAvailable"
+watch -d "echo "to download" && redis-cli llen exd:urls:todownload && echo "to filter" && redis-cli llen exd:urls:tofilter && echo "no dns" &&  redis-cli zcard exd:domain:lastNoMatchingDns && echo "available" && redis-cli zcard exd:domain:lastAvailable && echo "downloaded" && redis-cli zcard exd:url:lastDownloaded"
 ```
