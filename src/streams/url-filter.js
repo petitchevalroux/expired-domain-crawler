@@ -4,8 +4,7 @@ const {
     } = require("stream"),
     path = require("path"),
     dateUtils = require(path.join(__dirname, "..", "utils", "date")),
-    Url = require("url")
-        .URL;
+    urlModule = require("url");
 class UrlFilterStream extends Transform {
     constructor(options) {
         options.readableObjectMode = true;
@@ -21,7 +20,7 @@ class UrlFilterStream extends Transform {
         try {
             const url = chunk.toString()
                 .trim();
-            const hostname = new Url(url)
+            const hostname = urlModule.parse(url)
                 .hostname;
             const self = this;
             this.filterUrl(hostname, url)
