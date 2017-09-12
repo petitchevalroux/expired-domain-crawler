@@ -7,7 +7,7 @@ class DomainModel {
             this.lastNoMatchingDns = value.lastNoMatchingDns;
         }
         if (value.downloadedUrls) {
-            this.lastNoMatchingDns = value.downloadedUrls;
+            this.downloadedUrls = value.downloadedUrls;
         }
     }
 }
