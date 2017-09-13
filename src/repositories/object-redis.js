@@ -223,6 +223,29 @@ class ObjectRedisRepository {
                 });
             });
     }
+
+    where(property, comparator, value) {
+        const self = this;
+        return new Promise((resolve, reject) => {
+            if (self.zSetProperties.indexOf(property) > -1) {
+                let min, max;
+                if (comparator === ">") {
+                    min = value;
+                    max = "+inf";
+                }
+                self
+                    .redisClient
+                    .zrangebyscore([self.getZsetKey(property), min,
+                        max
+                    ], (err, results) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        return resolve(results);
+                    });
+            }
+        });
+    }
 }
 
 module.exports = ObjectRedisRepository;
