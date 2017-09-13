@@ -23,13 +23,8 @@ const path = require("path"),
     HttpErrorStream = require(path.join(__dirname, "..", "streams",
         "http-error")),
     Promise = require("bluebird"),
-    DomainRepository = require(path.join(__dirname, "..", "repositories",
-        "domain-redis")),
-    domainRepository = new DomainRepository({
-        redisClient: redisClient
-    }),
     httpErrorStream = new HttpErrorStream({
-        domainRepository: domainRepository,
+        domainRepository: di.domainRepository,
         apiClient: di.godaddy
     });
 
@@ -46,7 +41,7 @@ module.exports = fifoRepository.get("http:error")
             fifoRepository: fifoRepository,
             filterStream: new FilterStream({
                 urlRepository: urlRepository,
-                domainRepository: domainRepository
+                domainRepository: di.domainRepository
             }),
             downloadStream: new HttpDownloadStream({
                 urlRepository: urlRepository,
