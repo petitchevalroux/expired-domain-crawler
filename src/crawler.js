@@ -13,13 +13,18 @@ class Crawler {
         const self = this;
         [this.filterStream, this.downloadStream, this.extractStream]
             .forEach((stream, index) => {
+                const prefix = prefixes[index];
                 stream.on("data", (data) => {
-                    self.log.verbose("%s: data out %j",
-                        prefixes[
-                            index], data);
+                    if (prefix === "downloaded") {
+                        data = Object.assign({}, {
+                            "downloading": stream.downloadingCount,
+                            url: data.url
+                        });
+                    }
+                    self.log.verbose("%s: %j", prefix, data);
                 });
                 stream.on("error", (error) => {
-                    self.log.error("%s: %s", prefixes[index],
+                    self.log.error("%s: %s", prefix,
                         error.toString());
                 });
             });
