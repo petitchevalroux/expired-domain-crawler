@@ -5,6 +5,9 @@ const path = require("path"),
         "download")),
     httpErrorFifoStream = di.fifoRepository.get("http:error");
 httpErrorFifoStream.pipe(di.httpErrorStream);
-module.exports = new HttpDownloadStream({
-    httpErrorStream: httpErrorFifoStream
-});
+module.exports = new HttpDownloadStream(
+    Object.assign({
+        urlRepository: di.urlRepository,
+        httpErrorStream: httpErrorFifoStream
+    }, di.config.get("download"))
+);

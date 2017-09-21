@@ -10,17 +10,17 @@ const path = require("path"),
     Promise = require("bluebird"),
     nconf = require("nconf"),
     crawler = new Crawler({
-        log: di.log,
+            log: di.log,
         fifoRepository: di.fifoRepository,
-        filterStream: new FilterStream({
-            urlRepository: di.urlRepository,
+            filterStream: new FilterStream({
+                urlRepository: di.urlRepository,
             domainRepository: di.domainRepository,
             maxUrlsPerDomain: di.config.get("domain")
                 .maxUrlsPerDomain
-        }),
-        downloadStream: di.downloadStream,
-        extractStream: new ExtractorStream()
-    });
+            }),
+            downloadStream: di.downloadStream,
+            extractStream: new ExtractorStream()
+        });
 
 module.exports = new Promise
     .resolve(crawler)

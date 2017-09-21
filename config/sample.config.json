@@ -12,5 +12,9 @@
     },
     "domain": {
         "maxUrlsPerDomain": 1000
+    },
+    "download": {
+        "maxParallelHosts": 10,
+        "maxParallelDownloads": 10
     }
 }
