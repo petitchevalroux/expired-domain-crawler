@@ -1,9 +1,11 @@
 "use strict";
 const {
-    Transform,
-    HttpError
-} = require("@petitchevalroux/http-download-stream");
-class DownloadStream extends Transform {
+        Stream,
+        HttpError
+    } = require("@petitchevalroux/http-download-stream"),
+    Promise = require("bluebird");
+class DownloadStream extends Stream {
+
     constructor(options) {
         options.writableObjectMode = true;
         options.readableObjectMode = true;
@@ -11,41 +13,57 @@ class DownloadStream extends Transform {
         this.httpErrorStream = options.httpErrorStream || false;
     }
 
-    _transform(chunk, encoding, callback) {
+    downloadUrl(url) {
         const self = this;
-        super._transform(chunk, encoding, (err, result) => {
-            if (err) {
-                // Don't stop on http error
-                if (err instanceof HttpError) {
-                    if (!self.httpErrorStream) {
-                        return callback();
+        return new Promise((resolve, reject) => {
+            super
+                .downloadUrl(url)
+                .then((result) => {
+                    if (!result ||
+                        typeof result.input !== "string" ||
+                        typeof result.output !== "object" ||
+                        typeof result.output.body !== "string" ||
+                        typeof result.output.statusCode === "undefined" ||
+                        result.output.statusCode !== 200) {
+                        return ;
                     }
-                    const message = err.message || err.toString();
-                    return self.httpErrorStream.write(
-                        Object.assign({
-                            "message": message
-                        }, err),
-                        "",
-                        (err) => {
-                            callback(err);
+                    return {
+                        url: result.input,
+                        body: result.output.body
+                    };
+                })
+                .then((result) => {
+                    return resolve(result);
+                })
+                .catch((err) => {
+                    // Don't stop on http error
+                    if (err instanceof HttpError) {
+                        if (self.httpErrorStream) {
+                            const message = err.message || err.toString();
+                            self.httpErrorStream.write(
+                                Object.assign({
+                                    "message": message
+                                }, err),
+                                "",
+                                (err) => {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve();
+                                    }
+                                }
+                            );
+                        } else {
+                            resolve();
                         }
-                    );
-                } else {
-                    return callback(err);
-                }
-            }
-            if (!result ||
-                typeof result.input !== "string" ||
-                typeof result.output !== "object" ||
-                typeof result.output.body !== "string" ||
-                typeof result.output.statusCode === "undefined" ||
-                result.output.statusCode !== 200) {
-                return callback();
-            }
-            return callback(null, {
-                url: result.input,
-                body: result.output.body
-            });
+                    }
+                    // Avoid stream error when parsing url failed
+                    else if (err instanceof URIError) {
+                        resolve();
+                    } else {
+                        reject(err);
+                    }
+                });
         });
     }
 
