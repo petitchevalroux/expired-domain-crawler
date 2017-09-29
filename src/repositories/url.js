@@ -59,9 +59,7 @@ class UrlRepository {
         } else {
             return new Promise((resolve) => {
                 const parsedUrl = urlModule.parse(url);
-                resolve([hash(parsedUrl.hostname), hash(parsedUrl.path)]
-                    .join(
-                        ":"));
+                resolve(hash(parsedUrl.hostname + parsedUrl.path));
             });
         }
     }
