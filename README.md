@@ -1,5 +1,12 @@
 # expired-domain-crawler
 
+## Starting indexer
+
+### With only one url
+node src/cli/crawl.js --urls http://example.com
+
+### With multiple urls
+node src/cli/crawl.js --urls http://example.com --urls http://example.com
 
 ## Monitoring
 

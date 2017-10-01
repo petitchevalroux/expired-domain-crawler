@@ -26,7 +26,8 @@ const path = require("path"),
     httpErrorStream = new HttpErrorStream({
         domainRepository: di.domainRepository,
         apiClient: di.godaddy
-    });
+    }),
+    nconf = require("nconf");
 
 httpErrorStream.on("error", (error) => {
     di.log.error(error);
@@ -51,8 +52,21 @@ module.exports = fifoRepository.get("http:error")
         });
     })
     .then((crawler) => {
+        let urls = nconf.get("url");
+        if (!Array.isArray(urls)) {
+            if (urls) {
+                urls = [urls];
+            } else {
+                urls = [];
+            }
+        }
+        if (!urls.length) {
+            return crawler.run();
+        }
         return Promise
-            .all([crawler.addUrl("http://www.monde-du-velo.com/")])
+            .all(urls.map(url => {
+                return crawler.addUrl(url);
+            }))
             .then(() => {
                 return crawler.run();
             });
