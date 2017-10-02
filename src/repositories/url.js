@@ -46,7 +46,11 @@ class UrlRepository {
     }
     getNormalizedUrl(url) {
         return new Promise((resolve) => {
-            resolve(normalizeUrl(url));
+            try {
+                resolve(normalizeUrl(url));
+            } catch (e) {
+                throw new TypeError(e.message);
+            }
         });
     }
     getUrlId(url, normalized) {
