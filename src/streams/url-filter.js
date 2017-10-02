@@ -83,7 +83,8 @@ class UrlFilterStream extends Transform {
 
     filterError(err, callback) {
         // Avoid stream error when parsing url failed
-        if (err instanceof URIError) {
+        if (err instanceof URIError ||
+            err instanceof TypeError) {
             return callback();
         }
         return callback(err);
