@@ -9,5 +9,8 @@
     "godaddy": {
         "client_id": "",
         "client_secret": ""
+    },
+    "domain": {
+        "maxUrlsPerDomain": 1000
     }
 }

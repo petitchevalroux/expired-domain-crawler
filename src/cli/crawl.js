@@ -14,7 +14,9 @@ const path = require("path"),
         fifoRepository: di.fifoRepository,
         filterStream: new FilterStream({
             urlRepository: di.urlRepository,
-            domainRepository: di.domainRepository
+            domainRepository: di.domainRepository,
+            maxUrlsPerDomain: di.config.get("domain")
+                .maxUrlsPerDomain
         }),
         downloadStream: di.downloadStream,
         extractStream: new ExtractorStream()
