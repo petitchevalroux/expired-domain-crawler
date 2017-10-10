@@ -74,10 +74,7 @@ class ObjectRedisRepository {
                                                     err
                                                 );
                                             }
-                                            resolve
-                                            (
-                                                zSet
-                                            );
+                                            resolve(zSet);
                                         });
                                 });
                         });
