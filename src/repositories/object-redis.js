@@ -5,6 +5,7 @@ class ObjectRedisRepository {
         this.redisClient = options.redisClient;
         this.namespace = options.namespace;
         this.zSetProperties = options.zSetProperties || [];
+        this.ttl = options.ttl;
     }
 
     fetchById(id) {
@@ -66,7 +67,18 @@ class ObjectRedisRepository {
                                         return reject(
                                             err);
                                     }
-                                    return resolve(zSet);
+                                    self.updateTtl(key,
+                                        (err) => {
+                                            if (err) {
+                                                return reject(
+                                                    err
+                                                );
+                                            }
+                                            resolve
+                                            (
+                                                zSet
+                                            );
+                                        });
                                 });
                         });
                     })
@@ -138,8 +150,12 @@ class ObjectRedisRepository {
         Object
             .getOwnPropertyNames(zSet)
             .forEach((property) => {
-                multi.push(["zadd", self.getZsetKey(property)].concat(
-                    zSet[property]));
+                const key = self.getZsetKey(property);
+                if (self.ttl) {
+                    multi.push("expire", key, self.ttl);
+                }
+                multi.push(["zadd", key]
+                    .concat(zSet[property]));
             });
         if (!multi.length) {
             return Promise.resolve(id);
@@ -161,7 +177,11 @@ class ObjectRedisRepository {
             return Promise.resolve(object);
         }
         this.zSetProperties.forEach((property) => {
-            multi.push(["zscore", self.getZsetKey(property), id]);
+            const key = self.getZsetKey(property);
+            if (self.ttl) {
+                multi.push("expire", key, self.ttl);
+            }
+            multi.push(["zscore", key, id]);
         });
         return new Promise((resolve, reject) => {
             self
@@ -204,7 +224,14 @@ class ObjectRedisRepository {
                                 if (err) {
                                     return reject(err);
                                 }
-                                resolve(result);
+                                self.updateTtl(key, (err) => {
+                                    if (err) {
+                                        return reject(
+                                            err
+                                        );
+                                    }
+                                    resolve(result);
+                                });
                             }
                         );
                     } else {
@@ -216,7 +243,14 @@ class ObjectRedisRepository {
                                 if (err) {
                                     return reject(err);
                                 }
-                                resolve(result);
+                                self.updateTtl(key, (err) => {
+                                    if (err) {
+                                        return reject(
+                                            err
+                                        );
+                                    }
+                                    resolve(result);
+                                });
                             }
                         );
                     }
@@ -245,6 +279,13 @@ class ObjectRedisRepository {
                     });
             }
         });
+    }
+
+    updateTtl(key, cb) {
+        if (!this.ttl) {
+            return cb();
+        }
+        this.redisClient.expire(key, this.ttl, cb);
     }
 }
 

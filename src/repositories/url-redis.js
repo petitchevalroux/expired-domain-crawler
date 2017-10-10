@@ -11,7 +11,8 @@ class UrlRedisRepository extends Url {
             namespace: "url",
             zSetProperties: [
                 "lastDownloaded"
-            ]
+            ],
+            ttl: options.ttl
         });
     }
 

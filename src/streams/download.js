@@ -48,5 +48,14 @@ class DownloadStream extends Transform {
             });
         });
     }
+
+    /**
+     * Return max download duration per url in seconds
+     * @returns {Number}
+     */
+    getMaxDownloadDuration() {
+        return Math.round((Math.max(this.options.rateWindow / this.options.rateCount,
+            this.options.timeout) * this.options.retries) / 1000);
+    }
 }
 module.exports = DownloadStream;

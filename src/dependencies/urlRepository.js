@@ -7,5 +7,8 @@ const path = require("path"),
         "repositories",
         "url-redis"));
 module.exports = new UrlRepository({
-    redisClient: di.redis
+    redisClient: di.redis,
+    ttl: di.downloadStream.getMaxDownloadDuration() *
+        di.config.get("domain")
+            .maxUrlsPerDomain
 });
