@@ -149,7 +149,7 @@ class ObjectRedisRepository {
             .forEach((property) => {
                 const key = self.getZsetKey(property);
                 if (self.ttl) {
-                    multi.push("expire", key, self.ttl);
+                    multi.push(["expire", key, self.ttl]);
                 }
                 multi.push(["zadd", key]
                     .concat(zSet[property]));
@@ -176,7 +176,7 @@ class ObjectRedisRepository {
         this.zSetProperties.forEach((property) => {
             const key = self.getZsetKey(property);
             if (self.ttl) {
-                multi.push("expire", key, self.ttl);
+                multi.push(["expire", key, self.ttl]);
             }
             multi.push(["zscore", key, id]);
         });
