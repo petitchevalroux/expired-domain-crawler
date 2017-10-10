@@ -1,17 +1,14 @@
 "use strict";
 const {
-        Transform,
-        HttpError
-    } = require("@petitchevalroux/http-download-stream"),
-    path = require("path"),
-    dateUtils = require(path.join(__dirname, "..", "utils", "date"));
+    Transform,
+    HttpError
+} = require("@petitchevalroux/http-download-stream");
 class DownloadStream extends Transform {
     constructor(options) {
         options.writableObjectMode = true;
         options.readableObjectMode = true;
         super(options);
         this.httpErrorStream = options.httpErrorStream || false;
-        this.urlRepository = options.urlRepository;
     }
 
     _transform(chunk, encoding, callback) {
@@ -37,43 +34,18 @@ class DownloadStream extends Transform {
                     return callback(err);
                 }
             }
-            if (!result) {
-                return callback(null);
+            if (!result ||
+                typeof result.input !== "string" ||
+                typeof result.output !== "object" ||
+                typeof result.output.body !== "string" ||
+                typeof result.output.statusCode === "undefined" ||
+                result.output.statusCode !== 200) {
+                return callback();
             }
-            const url = result.input;
-            self.urlRepository
-                .getByUrlOrCreate(url)
-                .then((urlObject) => {
-                    return self
-                        .urlRepository
-                        .update(
-                            urlObject.id, {
-                                "lastDownloaded": dateUtils.getTimestamp()
-                            }
-                        )
-                        .then(() => {
-                            return urlObject;
-                        });
-                })
-                .then((urlObject) => {
-                    if (result.output.statusCode === 200) {
-                        callback(
-                            null,
-                            Object.assign(urlObject, {
-                                body: result.output.body
-                            }));
-                    } else {
-                        callback();
-                    }
-                    return result;
-                })
-                .catch((err) => {
-                    // Avoid stream error when parsing url failed
-                    if (err instanceof URIError) {
-                        return callback();
-                    }
-                    return callback(err);
-                });
+            return callback(null, {
+                url: result.input,
+                body: result.output.body
+            });
         });
     }
 }
