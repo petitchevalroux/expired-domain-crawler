@@ -174,11 +174,7 @@ class ObjectRedisRepository {
             return Promise.resolve(object);
         }
         this.zSetProperties.forEach((property) => {
-            const key = self.getZsetKey(property);
-            if (self.ttl) {
-                multi.push(["expire", key, self.ttl]);
-            }
-            multi.push(["zscore", key, id]);
+            multi.push(["zscore", self.getZsetKey(property), id]);
         });
         return new Promise((resolve, reject) => {
             self
