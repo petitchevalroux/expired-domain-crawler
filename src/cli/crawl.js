@@ -15,23 +15,12 @@ const path = require("path"),
     fifoRepository = new FifoRepository({
         redisClient: redisClient
     }),
-    HttpErrorStream = require(path.join(__dirname, "..", "streams",
-        "http-error")),
     Promise = require("bluebird"),
-    httpErrorStream = new HttpErrorStream({
-        domainRepository: di.domainRepository,
-        apiClient: di.godaddy
-    }),
     nconf = require("nconf");
-
-httpErrorStream.on("error", (error) => {
-    di.log.error(error);
-});
-
 
 module.exports = fifoRepository.get("http:error")
     .then((httpErrorFifoStream) => {
-        httpErrorFifoStream.pipe(httpErrorStream);
+        httpErrorFifoStream.pipe(di.httpErrorStream);
         return new Crawler({
             log: di.log,
             fifoRepository: fifoRepository,
