@@ -60,15 +60,15 @@ class Crawler {
     }
 
     getUrlsToFilterFifo() {
-        return this.fifoRepository.get("urls:tofilter");
+        return Promise.resolve(this.fifoRepository.get("urls:tofilter"));
     }
 
     getUrlsToDownloadFifo() {
-        return this.fifoRepository.get("urls:todownload");
+        return Promise.resolve(this.fifoRepository.get("urls:todownload"));
     }
 
     getContentToExtractFifo() {
-        return this.fifoRepository.get("content:toextract");
+        return Promise.resolve(this.fifoRepository.get("content:toextract"));
     }
 }
 

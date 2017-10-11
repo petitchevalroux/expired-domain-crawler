@@ -1,14 +1,13 @@
 "use strict";
-const Promise = require("bluebird");
 class FifoRepository {
     constructor() {
         this.fifos = [];
     }
     get(name) {
-        if (this.fifos[name]) {
-            return Promise.resolve(this.fifos[name]);
+        if (!this.fifos[name]) {
+            this.fifos[name] = this.create(name);
         }
-        return this.create(name);
+        return this.fifos[name];
     }
 }
 
